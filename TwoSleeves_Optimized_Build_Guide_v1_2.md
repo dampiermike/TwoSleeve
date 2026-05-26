@@ -323,6 +323,7 @@ The signal-detection guard now must include `VIX_MA_PERIOD = 20` so that vix_sma
 | Defensive-rotation crash predictors | 3 of 4 wrong-signed | Rejected |
 | HAR-RV crash predictor | Good vol model, but doesn't lead existing HVol gate | Rejected |
 | Cash → TLT / GLD | Lower Sharpe than BIL | Rejected |
+| **B4 vol-targeting overlay** (vehicle position scaled by `target_vol/realized_vol`, applied at entry + annual rebalance, vol_target ∈ {15,20,25,30}%, estimator ∈ {HVol20, HVol60, EWMA halflife-20}; 12 combos walk-forward tested) | **No-op or worse on both IS and OOS.** vt≥25% never fires (HVol≤16% entry gate already screens calm regimes, so vol_scale = min(1.0, 25/16) = 1.0 → no scaling). vt=15-20% costs CAGR with no Sharpe gain — the strategy's existing HVol gate + BIL cash state + VIX spike exit already do vol-aware sizing, making the overlay redundant. Best OOS candidate ties baseline; IS-winner is also a tie. Evidence: `test_b4_vol_targeting.py`. | **Rejected** |
 
 ---
 
