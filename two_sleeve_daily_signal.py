@@ -1,33 +1,35 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════
-  TwoSleeves Optimized v1.1  —  Daily Signal Generator
-  Per spec: TwoSleeves_Optimized_Build_Guide_v1_1.md
+  TwoSleeves Optimized v1.2  —  Daily Signal Generator
+  Per spec: TwoSleeves_Optimized_Build_Guide_v1_2.md
 
-  Re-runs the full v1.1 simulation through every available bar. The final
+  Re-runs the full v1.2 simulation through every available bar. The final
   sleeve states — plus any pending transition — ARE the daily signal.
   Stateless: no positions file to drift; correct by construction.
 
-  Causal timing: signals are detected at today's close; trades execute at
-  the NEXT session's open. So a run after today's close yields the order
-  to place at tomorrow's open.
+  v1.2 adds a 5th vehicle exit: VIX > SMA(VIX,20) × 2.0  -> rotate to defensive.
+
+  Causal timing: signals are detected at today's close; trades execute at the
+  NEXT session's open. So a run after today's close yields the order to place
+  at tomorrow's open.
 
   Usage:   python3 two_sleeve_daily_signal.py
 ═══════════════════════════════════════════════════════════════════════════════
 
-DATA: json/{QQQ,TQQQ,SPY,SPXL,GLD,BIL}_US.json  — keep these current.
+DATA: json/{QQQ,TQQQ,SPY,SPXL,GLD,BIL}_US.json + json/VIX_INDX.json
 NO external dependencies — stdlib only. NO VectorVest, NO web requests.
 """
 
 import json
 import math
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 WORKSPACE = Path(__file__).resolve().parent
 DATA_DIR  = WORKSPACE / "json"
 
-# ── Config (identical to backtest_two_sleeves_v1_1.py) ────────────────────────
+# ── Config (identical to backtest_two_sleeves_v1_2.py, no end-date cap) ───────
 TOTAL_CAPITAL   = 100_000.0
 SAFETY_TICKER   = "GLD"
 SAFETY_INIT     = 10_000.0
@@ -43,11 +45,17 @@ STOP_LOSS_PCT   = 12.0
 DEF_STOP_PCT    = 18.0
 COOLDOWN_DAYS   = 30
 
+# v1.2 additions
+VIX_TICKER      = "VIX_INDX"
+VIX_MA_PERIOD   = 20
+VIX_SPIKE_MULT  = 2.0
+
 EQUITY_CONFIGS = [
     ("QQQ", "TQQQ", "QQQ", 10, 175),
     ("SPY", "SPXL", "SPY",  5, 200),
 ]
-MIN_IDX = max(VOL_PERIOD, *(c[3] for c in EQUITY_CONFIGS), *(c[4] for c in EQUITY_CONFIGS))
+MIN_IDX = max(VOL_PERIOD, VIX_MA_PERIOD,
+              *(c[3] for c in EQUITY_CONFIGS), *(c[4] for c in EQUITY_CONFIGS))
 
 
 # ── Indicators ────────────────────────────────────────────────────────────────
@@ -66,14 +74,17 @@ def compute_wma(c, p):
     return out
 
 def compute_sma(c, p):
-    n, out = len(c), [None]*len(c); s = sum(c[:p]); out[p-1] = s/p
+    n, out = len(c), [None]*len(c)
+    if n < p: return out
+    s = sum(c[:p]); out[p-1] = s/p
     for i in range(p, n):
         s += c[i] - c[i-p]; out[i] = s/p
     return out
 
 
 def load_ticker(t):
-    path = DATA_DIR / f"{t}_US.json"
+    # VIX_INDX has no _US suffix; everything else does.
+    path = DATA_DIR / f"{t}.json" if t == VIX_TICKER else DATA_DIR / f"{t}_US.json"
     if not path.exists():
         raise FileNotFoundError(f"Required data file missing: {path}")
     raw = json.load(open(path))
@@ -82,8 +93,8 @@ def load_ticker(t):
     return {r["date"]: r for r in raw}
 
 
-# ── Load data ─────────────────────────────────────────────────────────────────
-all_tickers = {SAFETY_TICKER, CASH_TICKER}
+# ── Load data (7 tickers: 6 strategy + VIX) ───────────────────────────────────
+all_tickers = {SAFETY_TICKER, CASH_TICKER, VIX_TICKER}
 for s, v, d, _, _ in EQUITY_CONFIGS:
     all_tickers |= {s, v, d}
 raw_data = {t: load_ticker(t) for t in sorted(all_tickers)}
@@ -103,6 +114,9 @@ for s, v, d, wma, sma in EQUITY_CONFIGS:
     arrays[s]["sma"]  = compute_sma(c, sma)
     arrays[s]["hvol"] = compute_hvol(c, VOL_PERIOD)
 
+vix_close = arrays[VIX_TICKER]["closes"]
+vix_sma   = compute_sma(vix_close, VIX_MA_PERIOD)
+
 
 # ── Sleeve init ───────────────────────────────────────────────────────────────
 def make_sleeve(signal, vehicle, defensive, wma_period, sma_period):
@@ -110,7 +124,7 @@ def make_sleeve(signal, vehicle, defensive, wma_period, sma_period):
         signal=signal, vehicle=vehicle, defensive=defensive,
         wma_period=wma_period, sma_period=sma_period, label=f"{signal}->{vehicle}",
         state="cash", next_state=None,
-        v_shares=0.0, v_entry=0.0, v_entry_date="",
+        v_shares=0.0, v_entry=0.0, v_entry_date="", v_exit_rsn="",
         d_shares=0.0, d_entry=0.0, d_entry_date="",
         c_shares=0.0, c_entry_date=common[0], cash=0.0, equity=EQ_ALLOC_EACH,
         wma_was_below=True, entry_eligible=False, cooldown=0,
@@ -123,10 +137,9 @@ for sl in eq_sleeves:
 gld_shares = SAFETY_INIT / arrays[SAFETY_TICKER]["adj"][0]
 gld_equity = SAFETY_INIT
 prev_year  = int(common[0][:4])
-last_rebal_date = None
 
 
-# ── Simulation (identical to v1.1 backtest) ───────────────────────────────────
+# ── Simulation (identical to v1.2 backtest, uncapped) ─────────────────────────
 for i in range(n):
     day = common[i]
 
@@ -180,11 +193,15 @@ for i in range(n):
             sl["equity"] = eq_t
         gld_shares = gld_t / arrays[SAFETY_TICKER]["adj"][i]
         gld_equity = gld_t
-        last_rebal_date = day
     prev_year = cur_year
 
     if i < MIN_IDX:
         continue
+
+    # v1.2: VIX spike condition
+    vix_now = vix_close[i]
+    vix_ma_now = vix_sma[i]
+    vix_spike  = (vix_ma_now is not None and vix_now > vix_ma_now * VIX_SPIKE_MULT)
 
     for sl in eq_sleeves:
         sig, veh = sl["signal"], sl["vehicle"]
@@ -202,11 +219,13 @@ for i in range(n):
             do_sl = vad <= sl["v_entry"] * (1 - STOP_LOSS_PCT/100)
             do_v  = hv >= VOL_EXIT_THRESH
             do_w  = cbl
-            if do_tp or do_sl or do_v or do_w:
-                if do_tp:   sl["v_exit_rsn"] = f"take_profit({TAKE_PROFIT_PCT:.0f}%)"
-                elif do_sl: sl["v_exit_rsn"] = f"stop_loss({STOP_LOSS_PCT:.0f}%)"; sl["cooldown"] = COOLDOWN_DAYS
-                elif do_v:  sl["v_exit_rsn"] = f"vol_exit({hv:.1f}%)"
-                else:       sl["v_exit_rsn"] = "wma_cross_below"
+            do_spike = vix_spike     # v1.2
+            if do_tp or do_sl or do_v or do_w or do_spike:
+                if do_tp:    sl["v_exit_rsn"] = f"take_profit({TAKE_PROFIT_PCT:.0f}%)"
+                elif do_sl:  sl["v_exit_rsn"] = f"stop_loss({STOP_LOSS_PCT:.0f}%)"; sl["cooldown"] = COOLDOWN_DAYS
+                elif do_v:   sl["v_exit_rsn"] = f"vol_exit({hv:.1f}%)"
+                elif do_w:   sl["v_exit_rsn"] = "wma_cross_below"
+                else:        sl["v_exit_rsn"] = f"vix_spike({VIX_SPIKE_MULT}x_MA{VIX_MA_PERIOD})"
                 sl["wma_was_below"] = False
                 sl["next_state"] = "defensive"
 
@@ -229,8 +248,6 @@ for i in range(n):
 
 
 # ── Live-entry check on the LAST bar (drop the backtest's i+1<n guard) ────────
-# The backtest blocks an entry on the final bar because it has no fill bar.
-# In live trading the fill bar is tomorrow — so re-test entries here.
 last = n - 1
 for sl in eq_sleeves:
     if sl["state"] in ("cash", "defensive") and sl["next_state"] is None:
@@ -249,16 +266,18 @@ for sl in eq_sleeves:
 last_day   = common[-1]
 total_eq   = sum(sl["equity"] for sl in eq_sleeves) + gld_equity
 days_stale = (date.today() - date.fromisoformat(last_day)).days
+vix_last   = vix_close[-1]
+vix_ma_last= vix_sma[-1]
+vix_trig   = vix_ma_last * VIX_SPIKE_MULT if vix_ma_last is not None else None
 
 def fmt_pct(x):  return f"{x:+.2f}%"
-def held(entry_date):
-    return (date.fromisoformat(last_day) - date.fromisoformat(entry_date)).days
+def held(d):     return (date.fromisoformat(last_day) - date.fromisoformat(d)).days
 
 BAR = "═" * 70
 DSH = "─" * 70
 print()
 print(BAR)
-print(f"  TWO-SLEEVES v1.1  —  DAILY SIGNAL  —  {date.today().isoformat()}")
+print(f"  TWO-SLEEVES v1.2  —  DAILY SIGNAL  —  {date.today().isoformat()}")
 print(f"  Last data bar : {last_day}")
 if days_stale > 4:
     print(f"  ⚠  DATA IS {days_stale} CALENDAR DAYS OLD — refresh json/ before trading")
@@ -305,6 +324,10 @@ for sl in eq_sleeves:
         print(f"  {'':<12}    vol exit    : {sig} HVol ≥ 30%   (now {hv:.1f}%)")
         print(f"  {'':<12}    WMA cross   : {sig} WMA{sl['wma_period']} {w:.2f} vs SMA{sl['sma_period']} {s:.2f}"
               f"  ({'BULL +' if w>s else 'BEAR '}{w-s:+.2f})")
+        if vix_trig is not None:
+            print(f"  {'':<12}    VIX spike   : VIX > {vix_trig:.2f}   "
+                  f"(now {vix_last:.2f}, MA{VIX_MA_PERIOD}={vix_ma_last:.2f}, "
+                  f"ratio {vix_last/vix_ma_last:.2f}x)")
 
     elif sl["state"] == "defensive":
         dad = arrays[dfn]["adj"][-1]
@@ -347,6 +370,11 @@ for sl in eq_sleeves:
     regime = "BULL" if w > s else "BEAR"
     print(f"  {sig:<4} WMA{sl['wma_period']:<3}={w:>9.2f}   SMA{sl['sma_period']:<3}={s:>9.2f}   "
           f"HVol={hv:>5.1f}%   [{regime}]")
+if vix_ma_last is not None:
+    ratio = vix_last / vix_ma_last
+    flag = "  ⚠ SPIKE" if ratio > VIX_SPIKE_MULT else ""
+    print(f"  VIX  now ={vix_last:>9.2f}   SMA{VIX_MA_PERIOD:<3}={vix_ma_last:>9.2f}   "
+          f"ratio {ratio:.2f}x  (spike trigger {VIX_SPIKE_MULT}x){flag}")
 
 print()
 print(f"  Strategy tracked equity (since $100k on {common[0]}): ${total_eq:,.0f}")
