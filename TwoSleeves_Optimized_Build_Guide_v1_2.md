@@ -4,17 +4,21 @@
 
 **Backtest:** 2000-01-03 → 2026-05-22 · $100,000 starting capital · 6,637 bars
 
+> ⚠️ **Numbers in this guide were revised on 2026-08-04** after a data defect was found in `json/GLD_US.json`. See **[Data Integrity](#data-integrity)** before comparing against any earlier printing.
+
 ---
 
 ## Changelog
 
 | Version | Change | Final equity |
 |---|---|---:|
-| v1 | Per-sleeve optimum WMA/SMA (QQQ 10/175, SPY 5/200). Cash state held 0%-yield dollars. | $35,448,247 |
-| v1.1 | Cash state now holds BIL (1–3 month T-bills) — earns the risk-free rate through long crisis stretches. | $50,081,555 |
-| **v1.2** | **Adds a 5th vehicle exit: VIX > SMA(VIX, 20) × 2.0 → rotate to defensive.** Walk-forward validated on a 2000-2014 / 2015-2026 split — improves Sharpe on BOTH halves. 5 spike events fired in 26+ years, every one a real named vol shock (Flash Crash, Volmageddon, COVID, Japan carry-trade unwind). | **$69,376,087** |
+| v1 | Per-sleeve optimum WMA/SMA (QQQ 10/175, SPY 5/200). Cash state held 0%-yield dollars. | $24,834,927 |
+| v1.1 | Cash state now holds BIL (1–3 month T-bills) — earns the risk-free rate through long crisis stretches. | $35,086,974 |
+| **v1.2** | **Adds a 5th vehicle exit: VIX > SMA(VIX, 20) × 2.0 → rotate to defensive.** Walk-forward validated on a 2000-2014 / 2015-2026 split — improves Sharpe on BOTH halves. 5 spike events fired in 26+ years, every one a real named vol shock (Flash Crash, Volmageddon, COVID, Japan carry-trade unwind). | **$37,913,438** |
 
-The v1.2 change improves Sharpe by **+0.013** at the cost of ~1.9 points of MaxDD. Validated on out-of-sample data.
+All three figures are recomputed on the v1.2 locked window (2000-01-03 → 2026-05-22) with corrected GLD data — see **Data Integrity** below. Earlier printings of this table quoted $35,448,247 / $50,081,555 / $69,376,087, all inflated by the GLD splice defect.
+
+The v1.2 change improves Sharpe by **+0.018** (0.9488 → 0.9666) at the cost of ~1.9 points of MaxDD. Validated on out-of-sample data.
 
 ---
 
@@ -34,10 +38,10 @@ Differences from Two-Sleeves w/Gold v3:
 
 | Metric | Target |
 |---|---:|
-| Final equity | **$69,376,087** |
-| CAGR | **+28.14%** |
+| Final equity | **$37,913,438** |
+| CAGR | **+25.24%** |
 | Max drawdown | **−39.32%** |
-| Sharpe ratio | **0.9132** |
+| Sharpe ratio | **0.9666** |
 | Real trades | **88** (39 QQQ + 49 SPY) |
 | Rebalance events | 26 |
 | VIX spike-driven exits | 5 |
@@ -228,10 +232,10 @@ On the first bar of each new year, rebalance to 45/45/10. The locked v1.2 spec w
 > | Real trades | 88 (39 QQQ→TQQQ + 49 SPY→SPXL) |
 > | Rebalance events | 26 |
 > | VIX spike-driven exits | 5 |
-> | Final equity | $69,376,087 |
-> | CAGR | +28.14% |
+> | Final equity | $37,913,438 |
+> | CAGR | +25.24% |
 > | Max DD | −39.32% |
-> | Sharpe | 0.9132 |
+> | Sharpe | 0.9666 |
 >
 > **QQQ→TQQQ first 5 vehicle trades** (full system): PRECISE
 >
@@ -307,12 +311,50 @@ The signal-detection guard now must include `VIX_MA_PERIOD = 20` so that vix_sma
 
 ---
 
+## Data Integrity
+
+### The GLD splice defect (found 2026-08-04, fixed in `eb6cc39`)
+
+`json/GLD_US.json` joined its synthetic pre-inception history to the real ETF series **without rescaling**. The synthetic bars ran on a ~1/10.35 scale, so the handoff on **2004-11-18** produced a phantom **+933.6%** one-day gain on the safety sleeve — **+90.4% at portfolio level**, from $183,723 to $349,878 in a single bar. That artifact then compounded for 21 years.
+
+**Fix:** multiply the 1,269 synthetic bars (`open`/`high`/`low`/`close`/`adjusted_close`) by **10.347910**, the ratio at the join. Real bars untouched. The join is now −0.11%, and the largest single-day move in the series is +11.29%.
+
+**Effect on the locked v1.2 window:**
+
+| Metric | Contaminated | **Correct** |
+|---|---:|---:|
+| Final equity | $69,376,087 | **$37,913,438** |
+| CAGR | +28.14% | **+25.24%** |
+| Max drawdown | −39.32% | **−39.32%** |
+| Sharpe | 0.9132 | **0.9666** |
+
+Two results that look wrong but are not:
+
+- **Sharpe improves.** The phantom bar was a large positive outlier that inflated realised volatility more than it flattered mean return, so removing it raises the ratio even as returns fall.
+- **Max drawdown is unchanged.** It occurs in March 2020; a one-off 2004 level shift scales peak and trough by the same factor, leaving the ratio identical.
+
+**The trade log is byte-identical before and after the fix.** GLD is buy-and-hold and never enters the signal path, so every entry date, exit date, price and exit reason is unchanged — only position sizing moved. All PRECISE trade-level checkpoints in this guide therefore remain valid as printed.
+
+### Scope of the defect
+
+Verified clean: **TQQQ, SPXL and BIL** splices (synthetic bars are exactly 3.00× underlying; joins 0.00% / 0.00% / +0.08%). **QQQ and SPY** have no synthetic history. GLD was the only corrupted file.
+
+Economic sanity check on the corrected series: implied gold $289/oz on 2000-01-03 (actual ~$282) and $444/oz on 2004-11-17 (actual ~$444).
+
+`two_sleeve_update_data.py` only appends from each file's latest date forward and never re-seeds spliced tickers, so this correction persists across daily refreshes.
+
+---
+
 ## Appendix B — What Was Excluded From v1.2 (And Why)
+
+> ⚠️ **Every experiment in this table was run before the GLD fix.** Absolute dollar figures below (`$69.4M → …`) are therefore on the contaminated scale and are **not** comparable to the corrected $37,913,438 baseline. The Sharpe deltas, IS/OOS signs, trade counts and mechanisms are unaffected in direction, and the conclusions stand — but the dollar magnitudes are overstated.
+>
+> Two rejections most likely to be sensitive to the defect were re-tested on corrected data and **both still hold**: `Cash → TLT / GLD` (BIL remains best) and `3rd sleeve` (an unlevered GLD or TLT trend sleeve improves Sharpe and DD but dilutes CAGR from 26.68% to 20.58%). The remaining rows have not been re-run.
 
 | Feature | Result | Status |
 |---|---|---|
 | **Cash → BIL** | +$14.6M, all metrics better | **ADOPTED in v1.1** |
-| **VIX spike exit (B1 Variant B, p=20, mult=2.0)** | **+0.013 Sharpe, walk-forward validated on IS and OOS, 5 real named vol events** | **ADOPTED in v1.2** |
+| **VIX spike exit (B1 Variant B, p=20, mult=2.0)** | **+0.018 Sharpe, walk-forward validated on IS and OOS, 5 real named vol events** | **ADOPTED in v1.2** |
 | B1 Variant A (entry gate on VIX < SMA) | Hurt Sharpe on both IS and OOS | Rejected |
 | B1 Variant C (entry gate + spike exit) | Slightly worse than spike exit alone | Rejected |
 | B1 mult ∈ {1.0, 1.2, 1.5} | Over-triggers, sells the bottom | Rejected |
