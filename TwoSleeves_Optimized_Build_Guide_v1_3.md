@@ -1,14 +1,21 @@
-# Two-Sleeves Optimized — Build Guide v1.3 (CANDIDATE)
+# Two-Sleeves Optimized — Build Guide v1.3
 
 *Non-equity defensive state · Low-correlation sector sleeves · Per-sleeve vol gates · Monthly rebalance · Strictly causal pricing*
 
 **Backtest:** 2000-01-03 → 2026-05-22 · $100,000 starting capital · 6,637 bars
 
-> 🚧 **STATUS: CANDIDATE — NOT ADOPTED.** v1.2 remains the live traded strategy.
-> `two_sleeve_daily_signal_v1_3.py` runs in shadow inside the daily job and its
-> call appears in the email and text, clearly labelled, so it can be watched
-> before any capital is committed. It shares no state with the v1.2 signal and
-> cannot affect the live call.
+> ✅ **STATUS: ADOPTED — live as of 2026-08-05.** `two_sleeve_daily_signal_v1_3.py`
+> is the signal the daily job alerts on. v1.2 still prints in the run as a
+> labelled reference section but trades nothing.
+>
+> ⚠️ **Promotion changes the traded universe.** v1.3 holds **TLT, XLE and XLV**,
+> none of which the v1.2 portfolio ever touched, and cuts the GLD safety sleeve
+> from 10% to 5%. The existing account must be transitioned to the sleeve states
+> the signal reports before the strategy tracks the backtest. See
+> **Appendix B — Operational Notes**.
+>
+> Promoted directly from backtest without a shadow-observation period, at the
+> owner's direction.
 
 ---
 
@@ -276,20 +283,50 @@ downtrends.
 
 ## Appendix B — Operational Notes
 
-`two_sleeve_run_daily.sh` runs v1.3 as **Step 2b**, after the live v1.2 signal:
+### Daily job
 
-- The v1.3 section appears in the **daily email** in full.
-- The **text message** carries the live v1.2 call as its headline, plus a second
-  line: `[v1.3 candidate, not live] …`.
-- v1.3 failure is caught and cannot fail the run or affect the v1.2 signal.
-- The two signals share no state — both are stateless replays of full history.
+`two_sleeve_run_daily.sh` runs **v1.3 as Step 2** — first, so that its
+`PENDING TRADES` block is the one the notifier turns into the email subject and
+the text alert. v1.2 runs after it as **Step 2b**, a labelled reference section.
 
-**To promote v1.3 to live**, swap the script invoked in Step 2 of
-`two_sleeve_run_daily.sh` and drop Step 2b. Do not do this until the shadow
-signals have been watched long enough to trust, and note that it changes the
-traded universe — v1.3 holds TLT, XLE and XLV, which the v1.2 portfolio never
-touches.
+- The **email** carries both sections in full.
+- The **text** carries the v1.3 call only. v1.2 never drives an alert.
+- A v1.2 reference failure is caught and cannot fail the run.
+- The two share no state — both are stateless replays of full history.
+
+Delete the Step 2b block once the changeover has settled.
+
+### ⚠️ Position transition — required before the strategy tracks the backtest
+
+v1.3 is stateless: it computes what it *should* hold from price history alone.
+It has no knowledge of what the account actually holds. Until the account is
+moved to the states below, live results will diverge from the backtest.
+
+Sleeve states as of **2026-08-04** (the changeover):
+
+| | v1.2 held (outgoing) | **v1.3 requires** |
+|---|---|---|
+| Core sleeve | QQQ ~48% (defensive) | **TLT ~71.3%** (defensive) |
+| Second sleeve | SPXL ~44% (vehicle) | — sleeve removed — |
+| Energy sleeve | — | **GLD ~13.3%** (defensive) |
+| Healthcare sleeve | — | **BIL ~10.4%** (cash) |
+| Safety | GLD ~7.9% | **GLD 5.0%** (buy & hold) |
+
+Net effect: **sell QQQ and SPXL entirely**; **buy TLT**; hold GLD at roughly
+18.3% combined (13.3% as the energy sleeve's defensive holding plus the 5.0%
+safety sleeve); hold BIL at 10.4%.
+
+Note both non-core sleeves are currently *out* of their vehicles — the energy
+sleeve sits in its GLD defensive and healthcare sits in BIL cash. Neither XLE
+nor XLV is held today, though the signal may call for them later.
+
+### Rollback
+
+To revert to v1.2, swap the two script names in Steps 2 and 2b of
+`two_sleeve_run_daily.sh`. Nothing else is version-coupled: the data updater
+maintains a superset of both versions' files, and v1.2's script and reference
+outputs are untouched.
 
 ---
 
-*Two-Sleeves Optimized · Build Guide v1.3 (candidate) · Backtest does not guarantee future results*
+*Two-Sleeves Optimized · Build Guide v1.3 · LIVE from 2026-08-05 · Backtest does not guarantee future results*

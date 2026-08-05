@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════
-  TwoSleeves Optimized v1.3  —  Reference Implementation  (CANDIDATE)
+  TwoSleeves Optimized v1.3  —  Reference Implementation
   Per spec: TwoSleeves_Optimized_Build_Guide_v1_3.md
 
-  STATUS: candidate, NOT adopted. v1.2 remains the live strategy. The daily
-  runner reports v1.3 alongside v1.2 so its signals can be watched before any
-  real capital is committed.
+  STATUS: ADOPTED — v1.3 is the live strategy as of 2026-08-05. v1.2 still
+  prints in the daily job as a labelled reference section but trades nothing.
 
   CHANGES FROM v1.2 — three structural moves, all validated on both halves of
   a 2000-2014 / 2015-2026 walk-forward:

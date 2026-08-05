@@ -1,23 +1,18 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════════════════════
-  TwoSleeves Optimized v1.3  —  Daily Signal Generator  (CANDIDATE / SHADOW)
+  TwoSleeves Optimized v1.3  —  Daily Signal Generator  (PRODUCTION)
   Per spec: TwoSleeves_Optimized_Build_Guide_v1_3.md
 
-  ⚠ v1.3 IS NOT LIVE. v1.2 remains the traded strategy; this script runs
-    alongside it so the v1.3 signal can be watched in the daily email/text
-    before any capital is committed. It places no orders and shares no state
-    with the v1.2 signal.
+  This is the LIVE signal. v1.2 still runs after it in the daily job, but only
+  as a labelled reference section in the email — it drives nothing.
 
-  Same stateless design as the v1.2 signal: re-runs the full simulation over
-  every available bar, so the final sleeve states ARE the signal. No positions
-  file to drift.
+  Stateless by design: re-runs the full simulation over every available bar, so
+  the final sleeve states ARE the signal. No positions file to drift.
 
   Causal timing: signals are detected at today's close; trades execute at the
-  NEXT session's open.
-
-  Emits one machine-readable line for the notifier:
-      V13_SUMMARY: <one-line summary>
+  NEXT session's open. So a run after today's close yields the order to place
+  at tomorrow's open.
 
   Usage:  python3 two_sleeve_daily_signal_v1_3.py
 ═══════════════════════════════════════════════════════════════════════════════
@@ -222,7 +217,7 @@ port = sum(sl["equity"] for sl in sleeves) + gld_shares*arrays[SAFETY_TICKER]["a
 
 BAR = "=" * 70
 print(BAR)
-print(f"  TWO-SLEEVES v1.3 (CANDIDATE — NOT LIVE)  —  SIGNAL  —  {today}")
+print(f"  TWO-SLEEVES v1.3  —  DAILY SIGNAL  —  {today}")
 print(f"  Last data bar : {last}")
 if age > 5:
     print(f"  !  DATA IS {age} CALENDAR DAYS OLD — refresh json/ before trading")
@@ -240,7 +235,7 @@ for sl in sleeves:
         pending.append(f"{sl['label']}: SELL {frm} -> BUY {to}   ({why})")
 
 print()
-print("  PENDING TRADES — v1.3 CANDIDATE  (market-on-open, next session)")
+print("  PENDING TRADES  (place as market-on-open orders for the next session)")
 print("  " + "-" * 66)
 if pending:
     for p in pending: print(f"  {p}")
@@ -248,7 +243,7 @@ else:
     print(f"  {HOLD}")
 
 print()
-print("  CURRENT POSITIONS — v1.3 CANDIDATE")
+print("  CURRENT POSITIONS")
 print("  " + "-" * 66)
 for sl in sleeves:
     held = {"vehicle": sl["vehicle"], "defensive": sl["defensive"],
@@ -284,10 +279,5 @@ vs = vix_sma[-1]
 print(f"  VIX  now={vix_close[-1]:>8.2f}  SMA{VIX_MA_PERIOD}={vs:>8.2f}  "
       f"ratio {vix_close[-1]/vs:.2f}x  (spike trigger {VIX_SPIKE_MULT}x)")
 print()
-print(f"  v1.3 tracked equity (since $100k on {common[0]}): ${port:,.0f}")
-print("  NOTE: v1.3 is a CANDIDATE. v1.2 remains the live strategy.")
+print(f"  Strategy tracked equity (since $100k on {common[0]}): ${port:,.0f}")
 print(BAR)
-
-# machine-readable line consumed by two_sleeve_notify.py
-summary = " | ".join(pending) if pending else "No trades - hold"
-print(f"V13_SUMMARY: {summary}")

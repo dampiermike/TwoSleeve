@@ -1,8 +1,8 @@
 #!/bin/bash
 # ═══════════════════════════════════════════════════════════════════════════
-#  TwoSleeves Optimized v1.1 — Daily Runner
-#  Step 1: refresh the 6 EODHD data files
-#  Step 2: generate the daily signal
+#  TwoSleeves Optimized v1.3 — Daily Runner
+#  Step 1: refresh the 10 EODHD data files
+#  Step 2: generate the daily signal (v1.3 live; v1.2 printed as reference)
 #  Step 3: commit the refreshed json/ data and push to origin/main
 #  Step 4: notify — email (full report) + iMessage (short summary)
 #  Output is tee'd to logs/daily-YYYY-MM-DD_HHMMSS.log
@@ -40,14 +40,17 @@ run_ok=1
     echo "── Step 1: refresh EODHD data ──"
     "$PY" two_sleeve_update_data.py
     echo
+    # v1.3 is the LIVE signal. It runs first so that its PENDING TRADES block
+    # is the one the notifier turns into the email subject and the text alert.
     echo "── Step 2: daily signal ──"
-    "$PY" two_sleeve_daily_signal.py
+    "$PY" two_sleeve_daily_signal_v1_3.py
     echo
-    # v1.3 runs in shadow: reported in the email/text, never traded. It shares
-    # no state with the v1.2 signal above, so it cannot affect the live call.
-    # A v1.3 failure must not fail the run while it is still a candidate.
-    echo "── Step 2b: v1.3 candidate signal (shadow — NOT live) ──"
-    "$PY" two_sleeve_daily_signal_v1_3.py || echo "  (v1.3 candidate signal failed — v1.2 above is unaffected)"
+    # v1.2 is retained as a reference section during the transition. It is
+    # informational only — it drives no alert and places no orders. Its failure
+    # must not fail the run, hence the `|| echo`. Delete this block once the
+    # v1.3 changeover has settled.
+    echo "── Step 2b: v1.2 previous version (reference only — NOT traded) ──"
+    "$PY" two_sleeve_daily_signal.py || echo "  (v1.2 reference signal failed — v1.3 above is unaffected)"
     echo
     echo "── Done — $(date) ──"
 ) 2>&1 | tee "$LOG" || run_ok=0
