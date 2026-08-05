@@ -176,7 +176,8 @@ def main():
     if errors:
         print(f"  COMPLETED WITH {len(errors)} PROBLEM(S) — review above before trading.")
         sys.exit(1)
-    print(f"  All {len(SYMBOLS)} data files refreshed. Run:  python3 two_sleeve_daily_signal.py")
+    print(f"  All {len(SYMBOLS)} data files refreshed. "
+          f"Run:  python3 two_sleeve_daily_signal_v1_3.py")
     print("=" * 72)
 
 

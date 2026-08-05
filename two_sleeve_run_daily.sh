@@ -34,7 +34,7 @@ run_ok=1
 (
     set -e
     echo "═══════════════════════════════════════════════════════════"
-    echo "  TwoSleeves v1.1 — Daily Run — $(date)"
+    echo "  TwoSleeves v1.3 — Daily Run — $(date)"
     echo "═══════════════════════════════════════════════════════════"
     echo
     echo "── Step 1: refresh EODHD data ──"
