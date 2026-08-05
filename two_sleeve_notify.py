@@ -36,19 +36,43 @@ SMS_NUMBERS = [n.strip() for n in os.environ.get("PHOENIX_SMS_NUMBERS", "").spli
 SMS_FORCE   = {n.strip() for n in os.environ.get("PHOENIX_SMS_FORCE", "").split(",") if n.strip()}
 
 
+V13_TAG = "V13_SUMMARY:"
+
+
 def extract_report(log_text: str) -> str:
-    """Pull the clean daily-signal report out of the full run log."""
+    """Pull the clean daily-signal report out of the full run log.
+
+    Spans Step 2 (live v1.2) through Step 2b (v1.3 candidate), so the email
+    carries both. The machine-readable V13_SUMMARY line is stripped — it is
+    for build_summary(), not for the reader.
+    """
     marker, end = "── Step 2: daily signal ──", "── Done"
     if marker in log_text:
         body = log_text.split(marker, 1)[1]
         if end in body:
             body = body.split(end, 1)[0]
-        return body.strip("\n")
-    return log_text.strip("\n")
+    else:
+        body = log_text
+    lines = [ln for ln in body.splitlines() if not ln.strip().startswith(V13_TAG)]
+    return "\n".join(lines).strip("\n")
 
 
-def build_summary(report: str, today: str) -> tuple[str, str]:
-    """Return (subject, sms_body) from the report's PENDING TRADES block."""
+def extract_v13(log_text: str) -> str:
+    """The v1.3 candidate's one-line summary, or '' if it did not run."""
+    for ln in log_text.splitlines():
+        s = ln.strip()
+        if s.startswith(V13_TAG):
+            return s[len(V13_TAG):].strip()
+    return ""
+
+
+def build_summary(report: str, today: str, v13: str = "") -> tuple[str, str]:
+    """Return (subject, sms_body) from the report's PENDING TRADES block.
+
+    The subject and headline come from the LIVE v1.2 signal only — v1.3 is a
+    candidate and must never drive the alert. Its call is appended as a
+    clearly-labelled second line so it can be watched over time.
+    """
     pending: list[str] = []
     stale = ""
     capture = False
@@ -78,6 +102,8 @@ def build_summary(report: str, today: str) -> tuple[str, str]:
     sms = f"TwoSleeves {today}\n{verb}"
     if stale:
         sms += f"\n{stale}"
+    if v13:
+        sms += f"\n[v1.3 candidate, not live] {v13}"
     return subject, sms
 
 
@@ -141,7 +167,7 @@ def main() -> int:
 
     if status == "ok":
         report = extract_report(log_text)
-        subject, sms = build_summary(report, today)
+        subject, sms = build_summary(report, today, extract_v13(log_text))
         send_email(subject, report)
     else:
         tail = "\n".join(log_text.splitlines()[-50:])

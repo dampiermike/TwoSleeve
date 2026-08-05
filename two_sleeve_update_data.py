@@ -4,10 +4,13 @@
   TwoSleeves Optimized — Incremental Data Refresh
 ═══════════════════════════════════════════════════════════════════════════════
 
-Updates the 7 EODHD JSON files used by the TwoSleeves family:
+Updates the 10 EODHD JSON files used by the TwoSleeves family:
 
   QQQ.US,  SPY.US             — real history (no splice)
   TQQQ.US, SPXL.US, GLD.US, BIL.US — SPLICED: synthetic pre-inception + real
+  TLT.US                      — SPLICED (synthetic 2000-01..2002-07); v1.3's
+                                core-sleeve defensive holding
+  XLE.US,  XLV.US             — real history (no splice); v1.3 sector sleeves
   VIX.INDX                    — VIX index (real history, no splice; needed
                                 by v1.2's VIX-MA spike-exit overlay)
 
@@ -53,9 +56,14 @@ SYMBOLS = [
     "GLD.US",
     "BIL.US",
     "VIX.INDX",         # VIX index — needed by v1.2's spike-exit overlay
+    # v1.3 candidate additions
+    "TLT.US",           # core sleeve's defensive holding
+    "XLE.US",           # energy sleeve (signal + vehicle, unlevered)
+    "XLV.US",           # healthcare sleeve (signal + vehicle, unlevered)
 ]
 # Spliced files carry synthetic pre-inception bars and must never be re-seeded.
-SPLICED = {"TQQQ.US", "SPXL.US", "GLD.US", "BIL.US"}
+# TLT is spliced too: its 2000-01-03..2002-07-25 bars are synthetic.
+SPLICED = {"TQQQ.US", "SPXL.US", "GLD.US", "BIL.US", "TLT.US"}
 
 TOKEN   = os.environ.get("EODHD_API_TOKEN")
 TIMEOUT = 60.0

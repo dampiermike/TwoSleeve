@@ -43,6 +43,12 @@ run_ok=1
     echo "── Step 2: daily signal ──"
     "$PY" two_sleeve_daily_signal.py
     echo
+    # v1.3 runs in shadow: reported in the email/text, never traded. It shares
+    # no state with the v1.2 signal above, so it cannot affect the live call.
+    # A v1.3 failure must not fail the run while it is still a candidate.
+    echo "── Step 2b: v1.3 candidate signal (shadow — NOT live) ──"
+    "$PY" two_sleeve_daily_signal_v1_3.py || echo "  (v1.3 candidate signal failed — v1.2 above is unaffected)"
+    echo
     echo "── Done — $(date) ──"
 ) 2>&1 | tee "$LOG" || run_ok=0
 

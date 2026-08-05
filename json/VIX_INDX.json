@@ -62777,10 +62777,19 @@
   {
     "date": "2026-08-04",
     "open": 15.76,
-    "high": 16.07,
+    "high": 16.65,
     "low": 15.51,
-    "close": 15.99,
-    "adjusted_close": 15.99,
+    "close": 16.5,
+    "adjusted_close": 16.5,
+    "volume": 0
+  },
+  {
+    "date": "2026-08-05",
+    "open": 16.15,
+    "high": 16.85,
+    "low": 15.89,
+    "close": 16.84,
+    "adjusted_close": 16.84,
     "volume": 0
   }
 ]
