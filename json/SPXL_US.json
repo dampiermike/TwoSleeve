@@ -62400,19 +62400,19 @@
   {
     "date": "2026-08-05",
     "open": 299.77,
-    "high": 300.9609,
+    "high": 300.96,
     "low": 292.5,
     "close": 292.85,
     "adjusted_close": 292.85,
-    "volume": 2069847
+    "volume": 2087300
   },
   {
     "date": "2026-08-06",
-    "open": 293.142,
+    "open": 293.21,
     "high": 295.07,
     "low": 290.2245,
-    "close": 291.36,
-    "adjusted_close": 291.36,
-    "volume": 1416526
+    "close": 291.2,
+    "adjusted_close": 291.2,
+    "volume": 1453902
   }
 ]
