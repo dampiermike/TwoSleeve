@@ -60213,18 +60213,18 @@
     "date": "2026-08-11",
     "open": 774.53,
     "high": 774.61,
-    "low": 769.34,
+    "low": 769.2,
     "close": 770.56,
     "adjusted_close": 770.56,
-    "volume": 36216318
+    "volume": 36740600
   },
   {
     "date": "2026-08-12",
     "open": 774.71,
-    "high": 774.9,
-    "low": 771.28,
-    "close": 772.57,
-    "adjusted_close": 772.57,
-    "volume": 27259649
+    "high": 774.87,
+    "low": 771.29,
+    "close": 772.49,
+    "adjusted_close": 772.49,
+    "volume": 32771433
   }
 ]

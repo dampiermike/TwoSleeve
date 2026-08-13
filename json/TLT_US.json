@@ -60854,19 +60854,19 @@
   {
     "date": "2026-08-11",
     "open": 82.27,
-    "high": 82.4568,
+    "high": 82.46,
     "low": 82.12,
     "close": 82.19,
     "adjusted_close": 82.19,
-    "volume": 22250216
+    "volume": 23268500
   },
   {
     "date": "2026-08-12",
-    "open": 82.45,
+    "open": 82.44,
     "high": 82.475,
     "low": 82.05,
     "close": 82.11,
     "adjusted_close": 82.11,
-    "volume": 20804339
+    "volume": 21240705
   }
 ]
