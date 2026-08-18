@@ -61900,5 +61900,14 @@
     "close": 401.48,
     "adjusted_close": 401.48,
     "volume": 6744200
+  },
+  {
+    "date": "2026-08-17",
+    "open": 402.335,
+    "high": 406.23,
+    "low": 402.18,
+    "close": 405.49,
+    "adjusted_close": 405.49,
+    "volume": 9351756
   }
 ]
