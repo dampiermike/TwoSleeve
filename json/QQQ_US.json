@@ -60265,20 +60265,20 @@
   },
   {
     "date": "2026-08-19",
-    "open": 720.41,
-    "high": 721.4999,
+    "open": 720.39,
+    "high": 721.5,
     "low": 712.61,
     "close": 716.08,
     "adjusted_close": 716.08,
-    "volume": 34834540
+    "volume": 35801700
   },
   {
     "date": "2026-08-20",
-    "open": 712.09,
+    "open": 712.28,
     "high": 714.94,
     "low": 708.52,
-    "close": 711.18,
-    "adjusted_close": 711.18,
-    "volume": 31486656
+    "close": 710.93,
+    "adjusted_close": 710.93,
+    "volume": 33271359
   }
 ]

@@ -60267,18 +60267,18 @@
     "date": "2026-08-19",
     "open": 770.36,
     "high": 772.47,
-    "low": 768.11,
+    "low": 768.1,
     "close": 769.06,
     "adjusted_close": 769.06,
-    "volume": 39805642
+    "volume": 40306000
   },
   {
     "date": "2026-08-20",
     "open": 765.96,
     "high": 768.15,
-    "low": 762.81,
-    "close": 762.71,
-    "adjusted_close": 762.71,
-    "volume": 40407829
+    "low": 762.05,
+    "close": 762.6,
+    "adjusted_close": 762.6,
+    "volume": 45427032
   }
 ]
