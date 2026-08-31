@@ -60961,11 +60961,20 @@
   },
   {
     "date": "2026-08-27",
-    "open": 83.19,
+    "open": 83.2,
     "high": 83.35,
     "low": 83,
     "close": 83.13,
     "adjusted_close": 83.13,
-    "volume": 17338107
+    "volume": 17361900
+  },
+  {
+    "date": "2026-08-28",
+    "open": 83.04,
+    "high": 83.6,
+    "low": 82.78,
+    "close": 82.88,
+    "adjusted_close": 82.88,
+    "volume": 35804300
   }
 ]
