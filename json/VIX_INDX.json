@@ -63020,10 +63020,19 @@
   {
     "date": "2026-09-10",
     "open": 16.31,
-    "high": 18.05,
+    "high": 18.17,
     "low": 16.29,
-    "close": 17.51,
-    "adjusted_close": 17.51,
+    "close": 17.84,
+    "adjusted_close": 17.84,
+    "volume": 0
+  },
+  {
+    "date": "2026-09-11",
+    "open": 17.51,
+    "high": 17.71,
+    "low": 15.61,
+    "close": 15.62,
+    "adjusted_close": 15.62,
     "volume": 0
   }
 ]
