@@ -63040,8 +63040,17 @@
     "open": 17.5,
     "high": 18.17,
     "low": 16.58,
-    "close": 16.68,
-    "adjusted_close": 16.68,
+    "close": 17.1,
+    "adjusted_close": 17.1,
+    "volume": 0
+  },
+  {
+    "date": "2026-09-15",
+    "open": 17.57,
+    "high": 18.03,
+    "low": 16.79,
+    "close": 17.59,
+    "adjusted_close": 17.59,
     "volume": 0
   }
 ]
