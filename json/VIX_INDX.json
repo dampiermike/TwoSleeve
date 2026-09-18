@@ -63067,8 +63067,17 @@
     "open": 16.03,
     "high": 16.29,
     "low": 15.38,
-    "close": 15.58,
-    "adjusted_close": 15.58,
+    "close": 15.44,
+    "adjusted_close": 15.44,
+    "volume": 0
+  },
+  {
+    "date": "2026-09-18",
+    "open": 15.07,
+    "high": 15.63,
+    "low": 14.99,
+    "close": 15.25,
+    "adjusted_close": 15.25,
     "volume": 0
   }
 ]
