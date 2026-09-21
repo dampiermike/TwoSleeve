@@ -60422,7 +60422,7 @@
     "high": 763.52,
     "low": 757.93,
     "close": 760.88,
-    "adjusted_close": 760.88,
+    "adjusted_close": 758.9954,
     "volume": 43992434
   },
   {
@@ -60431,7 +60431,7 @@
     "high": 760.35,
     "low": 756.15,
     "close": 757.39,
-    "adjusted_close": 757.39,
+    "adjusted_close": 755.5141,
     "volume": 46194961
   },
   {
@@ -60440,7 +60440,7 @@
     "high": 761.67,
     "low": 749.6,
     "close": 754.05,
-    "adjusted_close": 754.05,
+    "adjusted_close": 752.1823,
     "volume": 59217648
   },
   {
@@ -60449,7 +60449,16 @@
     "high": 763.57,
     "low": 759.96,
     "close": 762.6,
-    "adjusted_close": 762.6,
-    "volume": 49647552
+    "adjusted_close": 760.7112,
+    "volume": 49652754
+  },
+  {
+    "date": "2026-09-18",
+    "open": 761.31,
+    "high": 762,
+    "low": 757.971,
+    "close": 761.69,
+    "adjusted_close": 761.69,
+    "volume": 65388349
   }
 ]
