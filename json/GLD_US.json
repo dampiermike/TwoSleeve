@@ -62119,20 +62119,20 @@
   },
   {
     "date": "2026-09-21",
-    "open": 400.165,
+    "open": 400.17,
     "high": 400.24,
     "low": 396.34,
     "close": 398.38,
     "adjusted_close": 398.38,
-    "volume": 6407600
+    "volume": 6411000
   },
   {
     "date": "2026-09-22",
     "open": 397.07,
-    "high": 400.765,
-    "low": 395.59,
-    "close": 400.12,
-    "adjusted_close": 400.12,
-    "volume": 6118254
+    "high": 400.78,
+    "low": 395.58,
+    "close": 400.07,
+    "adjusted_close": 400.07,
+    "volume": 6517619
   }
 ]

@@ -62691,16 +62691,16 @@
     "high": 296.105,
     "low": 286.2701,
     "close": 294.55,
-    "adjusted_close": 294.55,
-    "volume": 1273992
+    "adjusted_close": 294.24,
+    "volume": 1274665
   },
   {
     "date": "2026-09-22",
-    "open": 294.7864,
+    "open": 294.74,
     "high": 296.05,
-    "low": 293.2277,
-    "close": 294.38,
-    "adjusted_close": 294.38,
-    "volume": 1015103
+    "low": 293.2,
+    "close": 294.17,
+    "adjusted_close": 294.17,
+    "volume": 1053959
   }
 ]
