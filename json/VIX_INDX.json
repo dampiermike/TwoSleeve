@@ -63091,11 +63091,11 @@
   },
   {
     "date": "2026-09-22",
-    "open": 14.87,
-    "high": 14.87,
-    "low": 14.87,
-    "close": 14.87,
-    "adjusted_close": 14.87,
+    "open": 14.64,
+    "high": 14.95,
+    "low": 14.19,
+    "close": 14.21,
+    "adjusted_close": 14.21,
     "volume": 0
   },
   {
@@ -63103,8 +63103,17 @@
     "open": 14.16,
     "high": 15.45,
     "low": 14.12,
-    "close": 15.11,
-    "adjusted_close": 15.11,
+    "close": 15.18,
+    "adjusted_close": 15.18,
+    "volume": 0
+  },
+  {
+    "date": "2026-09-24",
+    "open": 15.83,
+    "high": 16.57,
+    "low": 15.34,
+    "close": 15.76,
+    "adjusted_close": 15.76,
     "volume": 0
   }
 ]
