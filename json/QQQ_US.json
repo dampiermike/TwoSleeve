@@ -60508,20 +60508,29 @@
   },
   {
     "date": "2026-09-28",
-    "open": 740.455,
+    "open": 740.46,
     "high": 741.42,
     "low": 731.63,
     "close": 736.53,
     "adjusted_close": 736.53,
-    "volume": 41017358
+    "volume": 41775000
   },
   {
     "date": "2026-09-29",
     "open": 740.145,
     "high": 740.5799,
     "low": 735.34,
-    "close": 738.58,
-    "adjusted_close": 738.58,
-    "volume": 23290661
+    "close": 737.93,
+    "adjusted_close": 737.93,
+    "volume": 27052269
+  },
+  {
+    "date": "2026-09-30",
+    "open": 740.19,
+    "high": 745.1,
+    "low": 739.76,
+    "close": 739.71,
+    "adjusted_close": 739.71,
+    "volume": 25951348
   }
 ]
