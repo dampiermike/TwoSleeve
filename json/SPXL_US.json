@@ -62746,15 +62746,15 @@
     "low": 281,
     "close": 283.2,
     "adjusted_close": 283.2,
-    "volume": 1208348
+    "volume": 1208700
   },
   {
     "date": "2026-09-30",
-    "open": 285.57,
+    "open": 285.435,
     "high": 288.72,
-    "low": 282.3,
-    "close": 281.24,
-    "adjusted_close": 281.24,
-    "volume": 1574805
+    "low": 280.68,
+    "close": 281.1,
+    "adjusted_close": 281.1,
+    "volume": 1723829
   }
 ]

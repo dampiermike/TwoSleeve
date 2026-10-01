@@ -60522,15 +60522,15 @@
     "low": 762.35,
     "close": 764.2,
     "adjusted_close": 764.2,
-    "volume": 36905364
+    "volume": 36910551
   },
   {
     "date": "2026-09-30",
-    "open": 766.37,
+    "open": 766.45,
     "high": 769.41,
-    "low": 764.25,
-    "close": 762.91,
-    "adjusted_close": 762.91,
-    "volume": 47880916
+    "low": 762.18,
+    "close": 762.63,
+    "adjusted_close": 762.63,
+    "volume": 62103235
   }
 ]
