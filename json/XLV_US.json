@@ -62867,10 +62867,19 @@
   {
     "date": "2026-10-12",
     "open": 171.49,
-    "high": 171.73,
-    "low": 171.73,
-    "close": 171.98,
-    "adjusted_close": 171.98,
-    "volume": 5779829
+    "high": 172.03,
+    "low": 170.85,
+    "close": 171.99,
+    "adjusted_close": 171.99,
+    "volume": 5826800
+  },
+  {
+    "date": "2026-10-13",
+    "open": 172.32,
+    "high": 169.74,
+    "low": 169.66,
+    "close": 169.74,
+    "adjusted_close": 169.74,
+    "volume": 8141097
   }
 ]
