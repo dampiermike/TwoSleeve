@@ -62751,15 +62751,24 @@
     "low": 91.52,
     "close": 91.52,
     "adjusted_close": 91.52,
-    "volume": 10022700
+    "volume": 10203300
   },
   {
     "date": "2026-10-15",
     "open": 91.53,
-    "high": 91.5398,
-    "low": 91.5398,
-    "close": 91.53,
-    "adjusted_close": 91.53,
-    "volume": 10214156
+    "high": 91.54,
+    "low": 91.53,
+    "close": 91.54,
+    "adjusted_close": 91.54,
+    "volume": 11074300
+  },
+  {
+    "date": "2026-10-16",
+    "open": 91.555,
+    "high": 91.5622,
+    "low": 91.5622,
+    "close": 91.565,
+    "adjusted_close": 91.565,
+    "volume": 10884691
   }
 ]
