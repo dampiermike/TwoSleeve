@@ -63186,19 +63186,19 @@
   {
     "date": "2026-10-19",
     "open": 71.01,
-    "high": 72.435,
+    "high": 72.44,
     "low": 70.13,
     "close": 70.64,
     "adjusted_close": 70.64,
-    "volume": 55777714
+    "volume": 55777700
   },
   {
     "date": "2026-10-20",
     "open": 69.71,
     "high": 71.925,
     "low": 68.28,
-    "close": 70.5354,
-    "adjusted_close": 70.5354,
-    "volume": 50344603
+    "close": 70.41,
+    "adjusted_close": 70.41,
+    "volume": 53963601
   }
 ]

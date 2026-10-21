@@ -62868,19 +62868,19 @@
   {
     "date": "2026-10-19",
     "open": 284.38,
-    "high": 287.9512,
-    "low": 282.8565,
+    "high": 287.95,
+    "low": 282.86,
     "close": 283.62,
     "adjusted_close": 283.62,
-    "volume": 1346443
+    "volume": 1338000
   },
   {
     "date": "2026-10-20",
-    "open": 282.65,
+    "open": 282.79,
     "high": 289.845,
     "low": 281.04,
-    "close": 286.49,
-    "adjusted_close": 286.49,
-    "volume": 1190353
+    "close": 286.27,
+    "adjusted_close": 286.27,
+    "volume": 1283315
   }
 ]
