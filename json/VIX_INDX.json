@@ -63290,10 +63290,19 @@
   {
     "date": "2026-10-22",
     "open": 18.29,
-    "high": 19.37,
+    "high": 20.31,
     "low": 17.71,
-    "close": 19.12,
-    "adjusted_close": 19.12,
+    "close": 19.03,
+    "adjusted_close": 19.03,
+    "volume": 0
+  },
+  {
+    "date": "2026-10-23",
+    "open": 19.18,
+    "high": 20.66,
+    "low": 18.87,
+    "close": 20.02,
+    "adjusted_close": 20.02,
     "volume": 0
   }
 ]
