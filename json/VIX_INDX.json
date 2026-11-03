@@ -63353,10 +63353,19 @@
   {
     "date": "2026-11-02",
     "open": 19.05,
-    "high": 20.15,
+    "high": 21.77,
     "low": 18.03,
-    "close": 20.11,
-    "adjusted_close": 20.11,
+    "close": 21.15,
+    "adjusted_close": 21.15,
+    "volume": 0
+  },
+  {
+    "date": "2026-11-03",
+    "open": 21.66,
+    "high": 21.91,
+    "low": 20.29,
+    "close": 20.48,
+    "adjusted_close": 20.48,
     "volume": 0
   }
 ]
