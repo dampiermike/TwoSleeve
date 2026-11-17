@@ -63443,10 +63443,19 @@
   {
     "date": "2026-11-16",
     "open": 20,
-    "high": 24.05,
+    "high": 24.52,
     "low": 19.84,
-    "close": 22.8,
-    "adjusted_close": 22.8,
+    "close": 22.91,
+    "adjusted_close": 22.91,
+    "volume": 0
+  },
+  {
+    "date": "2026-11-17",
+    "open": 23.11,
+    "high": 27.73,
+    "low": 22.36,
+    "close": 26.04,
+    "adjusted_close": 26.04,
     "volume": 0
   }
 ]
