@@ -63106,5 +63106,14 @@
     "close": 63.36,
     "adjusted_close": 63.36,
     "volume": 23204818
+  },
+  {
+    "date": "2026-11-18",
+    "open": 63,
+    "high": 63.28,
+    "low": 61.255,
+    "close": 61.29,
+    "adjusted_close": 61.29,
+    "volume": 54612343
   }
 ]
