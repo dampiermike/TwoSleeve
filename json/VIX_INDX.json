@@ -63479,10 +63479,19 @@
   {
     "date": "2026-11-20",
     "open": 28.63,
-    "high": 32.54,
+    "high": 40.03,
     "low": 26.94,
-    "close": 31.92,
-    "adjusted_close": 31.92,
+    "close": 35.89,
+    "adjusted_close": 35.89,
+    "volume": 0
+  },
+  {
+    "date": "2026-11-23",
+    "open": 31.38,
+    "high": 35.08,
+    "low": 15.39,
+    "close": 26.62,
+    "adjusted_close": 26.62,
     "volume": 0
   }
 ]
